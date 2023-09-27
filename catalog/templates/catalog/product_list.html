@@ -1,30 +1,48 @@
-{% extends 'catalog/home.html' %}
-{% load my_tags %}
+{% extends 'catalog/base.html' %}
 {% block content %}
-    <div class="row">
-        {% for object in object_list %}
-            <div class="col-md-5">
+<section class="jumbotron text-center">
+    <div class="container">
+        <h1 class="jumbotron-heading">{{ title }}</h1>
+    </div>
+</section>
+<div class="col-12 mb-5">
+    <a class="btn btn-outline-primary" href="{% url 'catalog:create' %}">Добавить товар</a>
+</div>
+    <div class="row text-center">
+    {% for product in page_obj %}
+        <div class="col-3">
+            <div class="card mb-4 box-shadow">
                 <div class="card-header">
-                    <h4 class="my-0 font-weight-normal">{{ object.name | title }}</h4>
+                    <h4 class="my-0 font-weight-normal">{{ product.product_name|title}}</h4>
                 </div>
-                <img class="card-img-top"
-                 src="{% mymedia object.image %}"
-                 alt="Card image cap" />
                 <div class="card-body">
-                     <div class="card-body">
-                            <p class="card-text">Описание: {{ object.description|default:"-" }}</p>
-                            <p class="card-text">Категория: {{ object.category }}</p>
-                            <span class="text-muted">Дата создания: {{ object.date_of_creation|default:"-" }}</span><br>
-                     </div>
-                    <button type="button" class="btn btn-lg btn-block btn-outline-primary">
-                        Купить за {{ object.price }} рублей
-                    </button>
-                    <div class="card-footer">
-                        <a class="btn btn-primary" href="{% url 'catalog:product_update' object.pk %}">Изменить</a>
-                        <a class="btn btn-outline-danger float-right" href="{% url 'catalog:product_delete' object.pk %}">Удалить</a>
-                    </div>
+                    <ul class="list-unstyled mt-3 mb-4 text-start m-3">
+                        <li> {{ product.descriptions|slice:":100"}} </li>
+                    </ul>
+                    <button type="button" class="btn btn-lg btn-block btn-outline-primary">Купить</button>
+                    <a href="{% url 'catalog:view' product.pk %}" class="btn btn-lg btn-block btn-outline-primary">Подробнее о товаре</a>
+                    <a href="{% url 'catalog:edit' product.pk %}" class="btn btn-lg btn-block btn-outline-primary">Редактировать товар</a>
                 </div>
             </div>
-        {% endfor %}
-    </div>
+        </div>
+    {% endfor %}
+</div>
+<br>
+<div class="pagination">
+  <span class="step-links">
+    {% if page_obj.has_previous %}
+    <a href="?page=1">&laquo; первая</a>
+    <a href="?page={{ page_obj.previous_page_number }}">предыдущая</a>
+    {% endif %}
+
+    <span class="current">
+      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+    </span>
+
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}">следующая</a>
+    <a href="?page={{ page_obj.paginator.num_pages }}">последняя &raquo;</a>
+    {% endif %}
+  </span>
+</div>
 {% endblock %}
