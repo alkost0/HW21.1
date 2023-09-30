@@ -1,8 +1,6 @@
 from django import forms
 from django.forms import BaseInlineFormSet
-
 from catalog.models import Product, Version
-
 
 class StyleFormMixin:
 
@@ -11,12 +9,10 @@ class StyleFormMixin:
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form_control'
 
-
 class ProductForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Product
-        fields = '__all__'
-
+        exclude = ('user',)
 
     def clean_product_name(self):
         cleaned_data = self.cleaned_data.get('product_name')
@@ -34,16 +30,14 @@ class ProductForm(StyleFormMixin, forms.ModelForm):
                 raise forms.ValidationError('Недопустимое описание продукта')
             return cleaned_data
 
-
 class VersionForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Version
         fields = '__all__'
-
 
 class VersionBaseInlineFormSet(BaseInlineFormSet):
     def clean(self):
         super().clean()
         active_list = [form.cleaned_data['is_active'] for form in self.forms if 'is_active' in form.cleaned_data]
         if active_list.count(True) > 1:
-            raise forms.ValidationError("У товара уже есть активная версия, вы не можете выбрать более одной активной версии")
+            raise forms.ValidationError("У товара уже есть активная версия! Не более одной активной версии")

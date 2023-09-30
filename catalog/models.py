@@ -1,5 +1,7 @@
 from django.db import models
 
+from config import settings
+
 NULLABLE = {"blank": True, "null": True}
 
 
@@ -12,14 +14,14 @@ class Product(models.Model):
     date_create = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     date_update = models.DateTimeField(auto_now=True, verbose_name='Дата последнего изменения')
 
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, **NULLABLE, verbose_name='Пользователь')
 
-def __str__(self):
-    return f'{self.product_name}: {self.category}'
+    def __str__(self):
+        return f'{self.product_name}: {self.category}'
 
-
-class Meta:
-    verbose_name = 'продукт'
-    verbose_name_plural = 'продукты'
+    class Meta:
+        verbose_name = 'продукт'
+        verbose_name_plural = 'продукты'
 
 
 class Version(models.Model):
