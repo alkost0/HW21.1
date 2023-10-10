@@ -1,6 +1,7 @@
 import random
 import secrets
 
+
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, UpdateView
@@ -14,7 +15,6 @@ class RegisterView(CreateView):
     model = User
     form_class = UserRegisterForm
     template_name = 'users/register.html'
-    # success_url = reverse_lazy('users:confirm')
     success_url = reverse_lazy('users:verify_email', args=['code'])
 
     def form_valid(self, form):
@@ -57,3 +57,7 @@ class ProfileView(UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+
+
+
